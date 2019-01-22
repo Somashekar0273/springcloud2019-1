@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.springcloud.product.entity.Product;
 import com.springcloud.product.entity.ProductResponse;
 import com.springcloud.product.repository.ProductRepository;
@@ -29,8 +31,20 @@ public class ProductDao {
 		return productRepository.findAll();
 	}
 	
+	
+	
 
+	@HystrixCommand(fallbackMethod="fallback_getProductByCode", commandProperties= {
+			@HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="3500"),
+			@HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="60")
+	})
 	public Product getProductByCode(String code) {
+		/*try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		// TODO Auto-generated method stub
 		Product temporaryProduct = productRepository.findByProductCode(code);
 		log.info("Product code: " + temporaryProduct.toString());
@@ -58,5 +72,19 @@ public class ProductDao {
 		
 		return temporaryProduct;
 	}
+	
+	Product fallback_getProductByCode(String code) {
+		log.info("Fall back method in action for getProductByCode for :" + code);
+		Product pr = new Product();
+		pr.setProductCode(code);
+		pr.setName("Not Found");
+		pr.setStockStatus(false);
+		pr.setDescription("Not Found");
+		pr.setPrice(0);
+		
+		return pr;
+	}
+	
+	
 
 }
