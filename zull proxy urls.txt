@@ -1,0 +1,20 @@
+http://localhost:1244/actuator/hystrix.stream
+
+Product Microservice - 
+
+http://localhost:9999
+http://localhost:9999/api/products/all		http://localhost:9876/ecom/product/api/products/all	
+http://localhost:9999/api/products/{code}	http://localhost:9876/ecom/product/api/products/{code}	
+
+Inventory Microservice - 
+
+http://localhost:9995
+http://localhost:9995/api/inventory/welcome	http://localhost:9876/ecom/inventory/api/inventory/welcome
+http://localhost:9995/api/inventory/all		http://localhost:9876/ecom/inventory/api/inventory/all
+http://localhost:9995/api/inventory/{code}	http://localhost:9876/ecom/inventory/api/inventory/{code}
+
+Zuul Proxy -
+
+http://localhost:9876/ecom/product/**
+http://localhost:9876/ecom/inventory/**
+
